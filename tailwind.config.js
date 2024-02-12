@@ -6,12 +6,16 @@ module.exports = {
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+    fontFamily:{
+      'title': ["'Bebas Neue', sans-serif"]
+    },
     extend: {
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
-      },
+       width:{
+        '500':'500px'
+       },
+       screens:{
+        "sm":"500px"
+       }
     },
   },
   plugins: [],
