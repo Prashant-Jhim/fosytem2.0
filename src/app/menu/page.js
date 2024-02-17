@@ -1,10 +1,12 @@
 'use client'
 import {useEffect,useState} from 'react'
 import app from '../database/db'
-import { getFirestore,doc,getDoc } from 'firebase/firestore'
+import { getFirestore,doc,getDoc, collection, getDocs } from 'firebase/firestore'
 import { useRouter } from 'next/navigation'
 const Menu = () =>{
     const [Show,ChangeShow] = useState("Options")
+    // Arr of Product 
+    const [ArrofProd,changeArrofProd] = useState([])
     const Router = useRouter()
     // database instance 
     const db = getFirestore(app)
@@ -24,8 +26,18 @@ const Menu = () =>{
     Router.push('/')
  }
 }
+// Function To Fetch All Products from database 
+const FetchProduct = async() =>{
+    const colref = collection(db,'products')
+    const getdocinstance = await getDocs(colref)
+    const docs = getdocinstance.docs.map((snapshot)=>{
+        return {...snapshot.data(),id:snapshot.id}
+    })
+    changeArrofProd(docs)
+}
  useEffect(()=>{
     loginornot()
+    FetchProduct()
  },[])
 
  // Function  To Go To Profile 
@@ -52,17 +64,18 @@ const Logout = () =>{
 
  }
     // Card Component 
-    const Card = () =>{
+    const Card = (props) =>{
         return (
             <div className = "overflow-hidden w-96 flex flex-col shadow-gray-300 shadow-lg rounded border border-black">
-                <img src = "https://foodgressing.com/wp-content/uploads/2022/11/Tim_Hortons_There_s_a_new_must_try_savoury_menu_item_at_your_loc.jpg.webp" />
+                <img src = {props.ImgSrc} />
                 <div className = "p-6">
-                    <h1 className='text-3xl mb-3'>Jalepeno Pastry</h1>
+                    <h1 className='text-3xl mb-3'>{props.Name}</h1>
+                    <h2 className = "text-xl font-bold text-green-600">Price : ${props.Price}</h2>
                     <h3>Details :</h3>
-                    <p>Protein : 3g</p>
-                    <p>Carbs : 3g</p>
-                    <p>Fats : 3g</p>
-                    <p>Sugar : 3g</p>
+                    <p>Protein : {props.Protein}g</p>
+                    <p>Carbs : {props.Carbs}g</p>
+                    <p>Fats : {props.Fat}g</p>
+                    <p>Sugar : {props.Sugar}g</p>
                 </div>
                 <input  className = "text-xl border p-3 border-0 border-b-2 border-b-black w-36 ml-3 mb-6" type = "number" placeholder = "Quantity" />
                 <button className = "border bg-red-500  text-white rounded h-12 border-black w-36 mb-3 ml-3 active:bg-white active:text-red-500">Add To Cart</button>
@@ -78,14 +91,7 @@ const Logout = () =>{
             </div>
 
             <div className = "flex p-6 flex-row gap-11 flex-wrap w-full">
-                <Card/>
-                <Card/>
-                <Card/>
-                <Card/>
-                <Card/>
-                <Card/>
-                <Card/>
-
+                {ArrofProd.map((data)=><Card Name = {data.Name} ImgSrc = {data.ImgSrc} Fat={data.Fat} Price = {data.Price} Protein = {data.Protein} Carbs = {data.Carbs} Sugar={data.Sugar}/> )}
                 
             </div>
 
