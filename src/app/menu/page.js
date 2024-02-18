@@ -86,31 +86,35 @@ const Logout = () =>{
    }
 
  }
+ // Function To Go To Cart 
+ const GoToCart = () =>{
+    Router.push("/cart")
+ }
     // Card Component 
     const Card = (props) =>{
-        const [Quantity,ChangeQuantity] = useState(1)
-        // Function To Change Quantity 
-        const ChangeQty = () =>{
-            const value = document.getElementById("Qty").value 
-            if (value > 0){
-                ChangeQuantity(value)
-            }
-        }
+        
+
+        
         // Function To Add To Cart 
         const AddToCart = async() =>{
             const prevNo = CartNo + 1
             const colref = collection(db,'orders')
             const details = {
                 ...props,
-                Quantity:Quantity,
+                Quantity:document.getElementById("Qty").value ,
                 Customer:window.localStorage.getItem("ID")
             }
-            ChangeCartNo(prevNo)
+            console.log(details)
+
             const SendTodb = await addDoc(colref,details)
+            if (SendTodb.id != undefined){
+                ChangeCartNo(prevNo)
+            }
             document.getElementById(props.id).style.display = 'flex'
             setTimeout(()=>{
                 document.getElementById(props.id).style.display = 'none'
             },3000)
+            
         }
         return (
             <div className = "overflow-hidden relative h-full w-96 flex flex-col shadow-gray-300 shadow-lg rounded border border-black">
@@ -124,7 +128,7 @@ const Logout = () =>{
                     <p>Fats : {props.Fat}g</p>
                     <p>Sugar : {props.Sugar}g</p>
                 </div>
-                <input onChange={ChangeQty} id = "Qty"  className = "text-xl border p-3 border-0 border-b-2 border-b-black w-36 ml-3 mb-6" type = "number" placeholder = "Quantity" />
+                <input id = "Qty"  className = "text-xl border p-3 border-0 border-b-2 border-b-black w-36 ml-3 mb-6" type = "number" placeholder = "Quantity" />
                 <button onClick={AddToCart} className = "border bg-red-500  text-white rounded h-12 border-black w-36 mb-3 ml-3 active:bg-white active:text-red-500">Add To Cart</button>
                 <p id = {props.id} className = "left-3 top-3 hidden text-white absolute bg-red-500 w-48 p-3 text-xl">Added To Cart ✅</p>
             </div>
@@ -134,7 +138,7 @@ const Logout = () =>{
         <div className = "flex flex-col w-full">
             <div className="w-full flex p-3 flex-row">
                 <h1 className = "text-5xl w-11/12 font-title">FOSystem2.0🥗</h1> 
-                <button className = "text-2xl mr-6 2xl:block xl:block lg:block hidden md:block sm:hidden">Cart({CartNo})</button>
+                <button onClick={GoToCart} className = "text-2xl mr-6 2xl:block xl:block lg:block hidden md:block sm:hidden">Cart({CartNo})</button>
                 <button onClick = {ShowOrClose} className = "text-2xl mr-6">{Show}</button>
             </div>
 
@@ -147,7 +151,7 @@ const Logout = () =>{
                 <button onClick={GoToProfile} className ="text-4xl active:text-red-600 border-2 border-white active:border-b-red-600 mt-6 mb-14">Profile</button>
                 <button id = "AddProduct" className ="text-4xl active:text-red-600 mb-14 border-2 border-white active:border-b-red-600">AddProduct</button>
                 <button onClick = {gotoOrders} className = "text-4xl active:text-red-600 active:border-b-red-600 mb-14 border-2 border-white">Orders</button>
-                <button className = "lg:hidden xl:hidden 2xl:hidden md:hidden sm:block block text-4xl active:text-red-600 mb-14 border-2 border-white active:border-b-red-600">Cart({CartNo})</button>
+                <button onClick={GoToCart} className = "lg:hidden xl:hidden 2xl:hidden md:hidden sm:block block text-4xl active:text-red-600 mb-14 border-2 border-white active:border-b-red-600">Cart({CartNo})</button>
                 <button className ="text-4xl active:text-red-600 mb-14 border-2 border-white active:border-b-red-600" onClick={Logout}>Logout</button>
             </div>
         </div>

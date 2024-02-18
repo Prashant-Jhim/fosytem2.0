@@ -59,13 +59,19 @@ const Addproduct = () =>{
         }
 
         const AddDocInstance = await addDoc(colref,Details)
-        console.log(AddDocInstance)
+        if (AddDocInstance.id != undefined){
+            document.getElementById("alert").style.display = "flex"
+            setTimeout(()=>{
+                document.getElementById("alert").style.display = "none"
+            },3000)
+        }
     }
     return (
         <div className = "flex flex-col items-center">
             <input onChange={prevorupload}   id = "File" type="file" className = "hidden" />
             <button className = "fixed object-contain text-3xl top-3 left-6 ">⏪Back</button>
             <h1 className = "md:text-5xl lg:text-5xl sm:text-5xl xl:text-5xl 2xl:text-5xl text-5xl text-red-500 mt-24 font-title">FOSystem2.0🥗</h1>
+            <p id = "alert" className = "text-lg p-6 hidden bg-green-200 mt-6 mb-6 rounded">New Product Added ✅</p>
             <div className = "relative flex flex-col">
                 <img id = "preview" className = " rounded lg:w-96 xl:w-96 2xl:w-96 sm:w-full w-full  md:w-96 h-96" src = "https://foodgressing.com/wp-content/uploads/2022/11/Tim_Hortons_There_s_a_new_must_try_savoury_menu_item_at_your_loc.jpg.webp" / >
                 <button onClick={ClickFunction} className = "absolute lg:w-96 xl:w-96 2xl:w-96 sm:w-full w-full  md:w-96 h-96 bg-white active:bg-opacity-70  bg-opacity-20 text-4xl">Upload 🆙</button>
