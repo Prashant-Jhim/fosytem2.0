@@ -21,6 +21,11 @@ const Menu = () =>{
       if (data == undefined){
        Router.push('/')
       }
+      if (data != undefined){
+        if (data.Type == "Customer"){
+            document.getElementById("AddProduct").style.display='none'
+        }
+      }
  }
  if (id == undefined){
     Router.push('/')
@@ -44,11 +49,17 @@ const FetchProduct = async() =>{
  const GoToProfile = () =>{
     Router.push("/profile")
  }
+// Function To Go To Orders Page 
+const gotoOrders = () =>{
+    Router.push("/orders")
+}
 // Function To Logout The User 
 const Logout = () =>{
     window.localStorage.removeItem("ID")
     Router.push('/')
 }
+
+
  // Function To Show Options Screen 
  const ShowOrClose = () =>{
    if (Show == "Options"){
@@ -66,8 +77,8 @@ const Logout = () =>{
     // Card Component 
     const Card = (props) =>{
         return (
-            <div className = "overflow-hidden w-96 flex flex-col shadow-gray-300 shadow-lg rounded border border-black">
-                <img src = {props.ImgSrc} />
+            <div className = "overflow-hidden h-full w-96 flex flex-col shadow-gray-300 shadow-lg rounded border border-black">
+                <img className = "w-full h-64 object-cover" src = {props.ImgSrc} />
                 <div className = "p-6">
                     <h1 className='text-3xl mb-3'>{props.Name}</h1>
                     <h2 className = "text-xl font-bold text-green-600">Price : ${props.Price}</h2>
@@ -97,7 +108,8 @@ const Logout = () =>{
 
             <div id = 'Options' className = "hidden xl:w-500 lg:w-500 md:w-500 sm:w-full w-full fixed flex p-6 top-24 border border-black h-3/4 right-0 flex-col  bg-white">
                 <button onClick={GoToProfile} className ="text-4xl active:text-red-600 border-2 border-white active:border-b-red-600 mt-6 mb-14">Profile</button>
-                <button className ="text-4xl active:text-red-600 mb-14 border-2 border-white active:border-b-red-600">AddProduct</button>
+                <button id = "AddProduct" className ="text-4xl active:text-red-600 mb-14 border-2 border-white active:border-b-red-600">AddProduct</button>
+                <button onClick = {gotoOrders} className = "text-4xl active:text-red-600 active:border-b-red-600 mb-14 border-2 border-white">Orders</button>
                 <button className = "lg:hidden xl:hidden 2xl:hidden md:hidden sm:block block text-4xl active:text-red-600 mb-14 border-2 border-white active:border-b-red-600">Cart(0)</button>
                 <button className ="text-4xl active:text-red-600 mb-14 border-2 border-white active:border-b-red-600" onClick={Logout}>Logout</button>
             </div>

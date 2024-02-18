@@ -59,7 +59,7 @@ const Addproduct = () =>{
         }
 
         const AddDocInstance = await addDoc(colref,Details)
-         console.log(AddDocInstance)
+        console.log(AddDocInstance)
     }
     return (
         <div className = "flex flex-col items-center">

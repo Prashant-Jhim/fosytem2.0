@@ -138,6 +138,7 @@ const page = () =>{
             Email:document.getElementById("Email").value,
             Password:hashed,
             Verifed:false,
+            Type:"Customer",
             time:Date.now()
         }
        // Part to Check every part is verified 
