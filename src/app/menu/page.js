@@ -1,10 +1,11 @@
 'use client'
 import {useEffect,useState} from 'react'
 import app from '../database/db'
-import { getFirestore,doc,getDoc, collection, getDocs } from 'firebase/firestore'
+import { getFirestore,doc,getDoc, collection, getDocs, addDoc, query, where } from 'firebase/firestore'
 import { useRouter } from 'next/navigation'
 const Menu = () =>{
     const [Show,ChangeShow] = useState("Options")
+    const [CartNo,ChangeCartNo] = useState(0)
     // Arr of Product 
     const [ArrofProd,changeArrofProd] = useState([])
     const Router = useRouter()
@@ -31,6 +32,16 @@ const Menu = () =>{
     Router.push('/')
  }
 }
+// Function To Get Cart No 
+const CartNoCheck = async()=>{
+    const colref = collection(db,'orders')
+    const q = query(colref,where("Customer","==",window.localStorage.getItem("ID")))
+     const Data = await getDocs(q)
+     const Arr = Data.docs.map((snapshot)=>{
+     return (
+     {...snapshot.data(),id:snapshot.id})}) 
+    ChangeCartNo(Arr.length)
+}
 // Function To Fetch All Products from database 
 const FetchProduct = async() =>{
     const colref = collection(db,'products')
@@ -42,6 +53,7 @@ const FetchProduct = async() =>{
 }
  useEffect(()=>{
     loginornot()
+    CartNoCheck()
     FetchProduct()
  },[])
 
@@ -76,8 +88,32 @@ const Logout = () =>{
  }
     // Card Component 
     const Card = (props) =>{
+        const [Quantity,ChangeQuantity] = useState(1)
+        // Function To Change Quantity 
+        const ChangeQty = () =>{
+            const value = document.getElementById("Qty").value 
+            if (value > 0){
+                ChangeQuantity(value)
+            }
+        }
+        // Function To Add To Cart 
+        const AddToCart = async() =>{
+            const prevNo = CartNo + 1
+            const colref = collection(db,'orders')
+            const details = {
+                ...props,
+                Quantity:Quantity,
+                Customer:window.localStorage.getItem("ID")
+            }
+            ChangeCartNo(prevNo)
+            const SendTodb = await addDoc(colref,details)
+            document.getElementById(props.id).style.display = 'flex'
+            setTimeout(()=>{
+                document.getElementById(props.id).style.display = 'none'
+            },3000)
+        }
         return (
-            <div className = "overflow-hidden h-full w-96 flex flex-col shadow-gray-300 shadow-lg rounded border border-black">
+            <div className = "overflow-hidden relative h-full w-96 flex flex-col shadow-gray-300 shadow-lg rounded border border-black">
                 <img className = "w-full h-64 object-cover" src = {props.ImgSrc} />
                 <div className = "p-6">
                     <h1 className='text-3xl mb-3'>{props.Name}</h1>
@@ -88,8 +124,9 @@ const Logout = () =>{
                     <p>Fats : {props.Fat}g</p>
                     <p>Sugar : {props.Sugar}g</p>
                 </div>
-                <input  className = "text-xl border p-3 border-0 border-b-2 border-b-black w-36 ml-3 mb-6" type = "number" placeholder = "Quantity" />
-                <button className = "border bg-red-500  text-white rounded h-12 border-black w-36 mb-3 ml-3 active:bg-white active:text-red-500">Add To Cart</button>
+                <input onChange={ChangeQty} id = "Qty"  className = "text-xl border p-3 border-0 border-b-2 border-b-black w-36 ml-3 mb-6" type = "number" placeholder = "Quantity" />
+                <button onClick={AddToCart} className = "border bg-red-500  text-white rounded h-12 border-black w-36 mb-3 ml-3 active:bg-white active:text-red-500">Add To Cart</button>
+                <p id = {props.id} className = "left-3 top-3 hidden text-white absolute bg-red-500 w-48 p-3 text-xl">Added To Cart ✅</p>
             </div>
         )
     }
@@ -97,12 +134,12 @@ const Logout = () =>{
         <div className = "flex flex-col w-full">
             <div className="w-full flex p-3 flex-row">
                 <h1 className = "text-5xl w-11/12 font-title">FOSystem2.0🥗</h1> 
-                <button className = "text-2xl mr-6 2xl:block xl:block lg:block hidden md:block sm:hidden">Cart(0)</button>
+                <button className = "text-2xl mr-6 2xl:block xl:block lg:block hidden md:block sm:hidden">Cart({CartNo})</button>
                 <button onClick = {ShowOrClose} className = "text-2xl mr-6">{Show}</button>
             </div>
 
             <div className = "flex p-6 flex-row gap-11 flex-wrap w-full">
-                {ArrofProd.map((data)=><Card Name = {data.Name} ImgSrc = {data.ImgSrc} Fat={data.Fat} Price = {data.Price} Protein = {data.Protein} Carbs = {data.Carbs} Sugar={data.Sugar}/> )}
+                {ArrofProd.map((data)=><Card id = {data.id} Name = {data.Name} ImgSrc = {data.ImgSrc} Fat={data.Fat} Price = {data.Price} Protein = {data.Protein} Carbs = {data.Carbs} Sugar={data.Sugar}/> )}
                 
             </div>
 
@@ -110,7 +147,7 @@ const Logout = () =>{
                 <button onClick={GoToProfile} className ="text-4xl active:text-red-600 border-2 border-white active:border-b-red-600 mt-6 mb-14">Profile</button>
                 <button id = "AddProduct" className ="text-4xl active:text-red-600 mb-14 border-2 border-white active:border-b-red-600">AddProduct</button>
                 <button onClick = {gotoOrders} className = "text-4xl active:text-red-600 active:border-b-red-600 mb-14 border-2 border-white">Orders</button>
-                <button className = "lg:hidden xl:hidden 2xl:hidden md:hidden sm:block block text-4xl active:text-red-600 mb-14 border-2 border-white active:border-b-red-600">Cart(0)</button>
+                <button className = "lg:hidden xl:hidden 2xl:hidden md:hidden sm:block block text-4xl active:text-red-600 mb-14 border-2 border-white active:border-b-red-600">Cart({CartNo})</button>
                 <button className ="text-4xl active:text-red-600 mb-14 border-2 border-white active:border-b-red-600" onClick={Logout}>Logout</button>
             </div>
         </div>
