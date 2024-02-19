@@ -63,7 +63,7 @@ const Addproduct = () =>{
             document.getElementById("alert").style.display = "flex"
             setTimeout(()=>{
                 document.getElementById("alert").style.display = "none"
-            },3000)
+            },2000)
         }
     }
     return (

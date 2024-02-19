@@ -154,6 +154,7 @@ const page = () =>{
             headers:{"Content-Type":"application/json"},
             body:JSON.stringify({...Details,
                 id:SentToDB.id,
+                Type:"Verify",
                 url:window.location.origin
             })
         })
