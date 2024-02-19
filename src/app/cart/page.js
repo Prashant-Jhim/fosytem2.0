@@ -76,14 +76,14 @@ const Cart = () =>{
     }
     return (
         <div className = "flex flex-col w-full ">
-            <button onClick = {GotoMenu} className = 'fixed text-3xl  top-6 left-3'>⏪Back</button>
-            <h1 className = "text-5xl mt-6 self-center text-red-600 font-title">
+            <button onClick = {GotoMenu} className = 'fixed text-3xl  top-3 left-3'>⏪Back</button>
+            <h1 className = "text-5xl mt-14 self-center text-red-600 font-title">
                 FOSystem2.0🥗
             </h1>
             <h3 className = "text-3xl mt-12 ml-6 mb-6">Hi {Name}👋🏻</h3>
             <h3 className = 'text-xl mb-6 ml-6'>Orders: <strong className = 'text-green-500'>${Price}</strong></h3>
             <button className = "self-start ml-6 mb-6 rounded shadow-lg text-lg active:text-white active:bg-green-500   border border-black p-4">CheckOut💰</button>
-            <div className = "flex gap-6 flex-wrap gap-12 ml-6 ">
+            <div className = "flex gap-6 flex-wrap gap-12 p-3 ">
                {Arr.map((data)=><Card  Quantity={data.Quantity} id = {data.id} Name = {data.Name} ImgSrc = {data.ImgSrc} Fat={data.Fat} Price = {data.Price} Protein = {data.Protein} Carbs = {data.Carbs} Sugar={data.Sugar}/>)}
             </div>
         </div>
