@@ -22,6 +22,17 @@ const Profile = () =>{
         console.log(sendtodb)
         
     }
+    // Function To Change Name of User 
+   const ChangeName = async() =>{
+    const value = document.getElementById("Name").value 
+    if (value != ""){
+        const ID = window.localStorage.getItem("ID")
+        const docinstance = doc(db,'users',ID) 
+        const UpdateInDb = await updateDoc(docinstance,{Name:value})
+        document.getElementById("Name").value = ""
+        LoginOrNot()
+    }
+   }
 
     // function To Change The Password 
     const ChangePassword = async() =>{
@@ -103,10 +114,10 @@ const Profile = () =>{
         <p id = "alert" className = 'text-lg p-3 mt-6 hidden border border-black bg-green-400 text-black rounded'>Link Sent To Email 📧</p>
         <div className = "flex mt-24 flex-col">
             <label className='text-2xl'>Name</label>
-            <input className="text-xl border-0 border-b-2 outline-none border-b-black h-14 p-6 mb-6" type = "text" placeholder = {Details.Name}/>
+            <input id = "Name" className="text-xl border-0 border-b-2 outline-none border-b-black h-14 p-6 mb-6" type = "text" placeholder = {Details.Name}/>
             <label className = "text-2xl">Email</label>
             <input className="text-xl border-0 outline-none border-b-2 border-b-black h-14 p-6 mb-6" type = "text" value = {Details.Email} />
-            <button className = "border border-2 border-black h-14 text-2xl rounded bg-green-500 text-white active:bg-white active:text-green-500 active:shadow-lg">Save✅</button>
+            <button onClick = {ChangeName} className = "border border-2 border-black h-14 text-2xl rounded bg-green-500 text-white active:bg-white active:text-green-500 active:shadow-lg">Save✅</button>
         </div>
         <h2 className = "mt-6 mb-6 ">OR</h2>
         <div className = "flex flex-row ">

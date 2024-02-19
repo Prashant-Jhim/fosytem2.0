@@ -45,7 +45,7 @@ const page = () =>{
         return false
      }
    }
-
+   
    // Function To Check Whether User Exists or Not 
    const CheckEmail = async(Email) =>{
      const q = query(colref,where("Email","==",Email))

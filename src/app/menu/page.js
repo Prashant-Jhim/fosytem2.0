@@ -99,21 +99,28 @@ const Logout = () =>{
         const AddToCart = async() =>{
             const prevNo = CartNo + 1
             const colref = collection(db,'orders')
+            var value = document.getElementById("Qty").value 
+            if ( value == ""){
+                value = 1
+            }
             const details = {
                 ...props,
-                Quantity:document.getElementById("Qty").value ,
+                Quantity:value ,
                 Customer:window.localStorage.getItem("ID")
             }
-            console.log(details)
+           
 
             const SendTodb = await addDoc(colref,details)
             if (SendTodb.id != undefined){
-                ChangeCartNo(prevNo)
+                document.getElementById(props.id).style.display = 'flex'
+                document.getElementById(props.id + "button").disabled = true 
+                setTimeout(()=>{
+                    ChangeCartNo(prevNo)
+                    document.getElementById(props.id).style.display = 'none'
+                },1000)
+                
             }
-            document.getElementById(props.id).style.display = 'flex'
-            setTimeout(()=>{
-                document.getElementById(props.id).style.display = 'none'
-            },3000)
+            
             
         }
         return (
@@ -129,7 +136,7 @@ const Logout = () =>{
                     <p>Sugar : {props.Sugar}g</p>
                 </div>
                 <input id = "Qty"  className = "text-xl border p-3 border-0 border-b-2 border-b-black w-36 ml-3 mb-6" type = "number" placeholder = "Quantity" />
-                <button onClick={AddToCart} className = "border bg-red-500  text-white rounded h-12 border-black w-36 mb-3 ml-3 active:bg-white active:text-red-500">Add To Cart</button>
+                <button id = {props.id+"button"} onClick={AddToCart} className = "border bg-red-500  text-white rounded h-12 border-black w-36 mb-3 ml-3 active:bg-white active:text-red-500">Add To Cart</button>
                 <p id = {props.id} className = "left-3 top-3 hidden text-white absolute bg-red-500 w-48 p-3 text-xl">Added To Cart ✅</p>
             </div>
         )
