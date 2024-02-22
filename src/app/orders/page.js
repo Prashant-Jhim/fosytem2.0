@@ -71,12 +71,12 @@ const orders = () =>{
     return (
         <div className = "flex flex-col w-full ">
             <button onClick = {GotoMenu} className = 'fixed text-3xl  top-6 left-3'>⏪Back</button>
-            <h1 className = "text-5xl mt-6 self-center text-red-600 font-title">
+            <h1 className = "text-5xl mt-24 self-center text-red-600 font-title">
                 FOSystem2.0🥗
             </h1>
-            <h3 className = "text-3xl mt-12 ml-6 mb-6">Hi {Details.Name}👋🏻</h3>
-            <h3 className = 'text-xl mb-6 ml-6'>Orders:</h3>
-            <div className = "flex ml-6 flex-col">
+            <h3 className = "text-3xl mt-12 ml-3 mb-6">Hi {Details.Name}👋🏻</h3>
+            <h3 className = 'text-xl mb-6 ml-3'>Orders:</h3>
+            <div className = "flex ml-3 flex-col">
                 <Card/>
             </div>
         </div>
