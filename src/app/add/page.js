@@ -3,8 +3,10 @@ import {useState} from 'react'
 import app from '../database/db'
 import {getStorage,getDownloadURL, ref, uploadBytes} from 'firebase/storage'
 import { collection, getFirestore ,addDoc, doc } from 'firebase/firestore'
+import { useRouter } from 'next/navigation'
 const Addproduct = () =>{
     const [Src,ChangeImgRef] = useState(undefined)
+    const Router = useRouter()
     // Database Part for Storage or Datastore
     const storage = getStorage(app)
     const datastore = getFirestore(app)
@@ -15,7 +17,10 @@ const Addproduct = () =>{
     const ClickFunction = () =>{
         document.getElementById("File").click()
     }
-    
+    // Function To Go Back To Menu 
+    const GoBack = () =>{
+        Router.push('/menu')
+    }
     // Function to preview image upload 
     const prevorupload = (event) =>{
         const file = event.target.files;
@@ -69,7 +74,7 @@ const Addproduct = () =>{
     return (
         <div className = "flex flex-col items-center">
             <input onChange={prevorupload}   id = "File" type="file" className = "hidden" />
-            <button className = "fixed object-contain text-3xl top-3 left-6 ">⏪Back</button>
+            <button onClick={GoBack} className = "fixed object-contain text-3xl top-3 left-6 ">⏪Back</button>
             <h1 className = "md:text-5xl lg:text-5xl sm:text-5xl xl:text-5xl 2xl:text-5xl text-5xl text-red-500 mt-24 font-title">FOSystem2.0🥗</h1>
             <p id = "alert" className = "text-lg p-6 hidden bg-green-200 mt-6 mb-6 rounded">New Product Added ✅</p>
             <div className = "relative flex flex-col">

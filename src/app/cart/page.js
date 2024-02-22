@@ -5,7 +5,7 @@ import {useState,useEffect} from 'react'
 import { collection, doc, getDoc,deleteDoc, getDocs, getFirestore, query, where } from "firebase/firestore"
 const Cart = () =>{
     const Router = useRouter()
-    const [Name,ChangeName] = useState("")
+    const [Details,ChangeDetails] = useState("")
     const [Price,changePrice] = useState(0)
     const db = getFirestore(app)
     const [Arr,ChangeArr] = useState([])
@@ -25,7 +25,7 @@ const Cart = () =>{
         const GetDocInstance = await getDoc(docinstance)
         const Details = GetDocInstance.data() 
         if (Details != undefined){
-        ChangeName(Details.Name)
+        ChangeDetails(Details)
         const colref = collection(db,'orders')
         const q = query(colref,where("Customer",'==',window.localStorage.getItem("ID")))
         const getdocinstance = await getDocs(q)
@@ -52,12 +52,15 @@ const Cart = () =>{
     const Card = (props) =>{
          // Function To Delete The Orders 
          const DeleteCard = async() =>{
+            document.getElementById(props.id).style.display = 'flex'
             const docinstance = doc(db,'orders',props.id)
             const DelDocinstance = await deleteDoc(docinstance)
             FetchCards()
          } 
+         
         return(
-            <div className = "w-96 border h-full border-black rounded   ">
+            <div className = "w-96 border h-full border-black rounded relative  ">
+                <button id = {props.id} className = "hidden absolute text-white bg-red-500 p-3 top-3 left-3 rounded">Deleting</button>
                 <img className="w-full h-64 object-cover " src = {props.ImgSrc} />
                 <div className = "p-3 mb-6">
                 <h1 className = "text-3xl">{props.Name}</h1>
@@ -80,7 +83,7 @@ const Cart = () =>{
             <h1 className = "text-5xl mt-14 self-center text-red-600 font-title">
                 FOSystem2.0🥗
             </h1>
-            <h3 className = "text-3xl mt-12 ml-6 mb-6">Hi {Name}👋🏻</h3>
+            <h3 className = "text-3xl mt-12 ml-6 mb-6">Hi {Details.Name}👋🏻</h3>
             <h3 className = 'text-xl mb-6 ml-6'>Orders: <strong className = 'text-green-500'>${Price}</strong></h3>
             <button className = "self-start ml-6 mb-6 rounded shadow-lg text-lg active:text-white active:bg-green-500   border border-black p-4">CheckOut💰</button>
             <div className = "flex gap-6 flex-wrap gap-12 p-3 ">

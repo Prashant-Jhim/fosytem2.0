@@ -56,7 +56,10 @@ const FetchProduct = async() =>{
     CartNoCheck()
     FetchProduct()
  },[])
-
+ // Function To Go to Add Product 
+ const GoToAddProduct = () =>{
+    Router.push('/add')
+ }
  // Function  To Go To Profile 
  const GoToProfile = () =>{
     Router.push("/profile")
@@ -144,7 +147,7 @@ const Logout = () =>{
     return (
         <div className = "flex flex-col w-full">
             <div className="w-full flex p-3 flex-row">
-                <h1 className = "text-5xl w-11/12 font-title">FOSystem2.0🥗</h1> 
+                <h1 className = "text-4xl md:text-5xl xl:text-5xl 2xl:text-5xl sm:text-4xl w-11/12 font-title">FOSystem2.0🥗</h1> 
                 <button onClick={GoToCart} className = "text-2xl mr-6 2xl:block xl:block lg:block hidden md:block sm:hidden">Cart({CartNo})</button>
                 <button onClick = {ShowOrClose} className = "text-2xl mr-6">{Show}</button>
             </div>
@@ -156,7 +159,7 @@ const Logout = () =>{
 
             <div id = 'Options' className = "hidden xl:w-500 lg:w-500 md:w-500 sm:w-full w-full fixed flex p-6 top-24 border border-black h-3/4 right-0 flex-col  bg-white">
                 <button onClick={GoToProfile} className ="text-4xl active:text-red-600 border-2 border-white active:border-b-red-600 mt-6 mb-14">Profile</button>
-                <button id = "AddProduct" className ="text-4xl active:text-red-600 mb-14 border-2 border-white active:border-b-red-600">AddProduct</button>
+                <button onClick = {GoToAddProduct} id = "AddProduct" className ="text-4xl active:text-red-600 mb-14 border-2 border-white active:border-b-red-600">AddProduct</button>
                 <button onClick = {gotoOrders} className = "text-4xl active:text-red-600 active:border-b-red-600 mb-14 border-2 border-white">Orders</button>
                 <button onClick={GoToCart} className = "lg:hidden xl:hidden 2xl:hidden md:hidden sm:block block text-4xl active:text-red-600 mb-14 border-2 border-white active:border-b-red-600">Cart({CartNo})</button>
                 <button className ="text-4xl active:text-red-600 mb-14 border-2 border-white active:border-b-red-600" onClick={Logout}>Logout</button>
