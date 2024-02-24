@@ -1,6 +1,7 @@
 'use client'
 import { useRouter } from "next/navigation"
 import app from '../database/db'
+import { loadStripe } from "@stripe/stripe-js"
 import {useState,useEffect} from 'react'
 import { collection, doc, getDoc,deleteDoc, getDocs, getFirestore, query, where } from "firebase/firestore"
 const Cart = () =>{
@@ -13,7 +14,38 @@ const Cart = () =>{
     const GotoMenu = () =>{
         Router.push("/menu")
     }
+    // Function To CheckOut 
+    const CheckOut = async() =>{
+        const CartFeed = Arr 
+        if (CartFeed.length != 0){
+            const url = window.location.origin 
+            const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPEAPICLIENT)
+            console.log(stripe)
+            const ID = window.localStorage.getItem("ID")
 
+            const Request = await fetch("/api/stripe",{
+                method:"POST",
+                headers:{"Content-Type":"application/json"},
+                body:JSON.stringify({
+                    url:url,
+                    CartFeed:CartFeed,
+                    Customer:ID
+                })
+            })
+            const Response = await Request.json()
+            window.localStorage.setItem("OrderID",Response.idoforder)
+            if (Response.status == true){
+                const result = stripe.redirectToCheckout({
+                    sessionId:Response.id
+                })
+                console.log(result)
+                if (result.error){
+                    console.log( result.error)
+                }
+                
+            }
+        }
+    }
     // Function To Fetch Card 
     const FetchCards = async()=>{
         const ID = window.localStorage.getItem('ID')
@@ -85,7 +117,7 @@ const Cart = () =>{
             </h1>
             <h3 className = "text-3xl mt-12 ml-6 mb-6">Hi {Details.Name}👋🏻</h3>
             <h3 className = 'text-xl mb-6 ml-6'>Orders: <strong className = 'text-green-500'>${Price}</strong></h3>
-            <button className = "self-start ml-6 mb-6 rounded shadow-lg text-lg active:text-white active:bg-green-500   border border-black p-4">CheckOut💰</button>
+            <button onClick = {CheckOut} className = "self-start ml-6 mb-6 rounded shadow-lg text-lg active:text-white active:bg-green-500   border border-black p-4">CheckOut💰</button>
             <div className = "flex gap-6 flex-wrap gap-12 p-3 ">
                {Arr.map((data)=><Card  Quantity={data.Quantity} id = {data.id} Name = {data.Name} ImgSrc = {data.ImgSrc} Fat={data.Fat} Price = {data.Price} Protein = {data.Protein} Carbs = {data.Carbs} Sugar={data.Sugar}/>)}
             </div>
