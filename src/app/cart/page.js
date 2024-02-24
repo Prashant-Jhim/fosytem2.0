@@ -33,7 +33,7 @@ const Cart = () =>{
                 })
             })
             const Response = await Request.json()
-            window.localStorage.setItem("OrderID",Response.idoforder)
+            window.localStorage.setItem("session",Response.id)
             if (Response.status == true){
                 const result = stripe.redirectToCheckout({
                     sessionId:Response.id

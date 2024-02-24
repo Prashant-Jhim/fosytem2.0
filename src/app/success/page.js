@@ -16,14 +16,16 @@ const successpayment = () =>{
        // Iterate over the documents returned by the query and delete them
         querySnapshot.forEach(async (doc) => {
             await deleteDoc(doc.ref);
-         console.log(`Document with ID ${doc.id} deleted successfully.`);
+        
         });
         // To Confirm The order in Database 
-        const ID = window.localStorage.getItem("OrderID")
-        const docinstance = doc(db,'successorders',ID)
-        const update = await updateDoc(docinstance,{
-            Purchase:true
-        })
+        const session = window.localStorage.getItem("session")
+        const querySnapshot2 = await getDocs(query(collection(db, 'successorders'), where("session","==",session)));
+        // Iterate over the documents returned by the query and delete them
+        querySnapshot2.forEach(async (doc) => {
+            await deleteDoc(doc.ref);
+        
+        });
     }
     useEffect(()=>{
         ConfirmPayment()

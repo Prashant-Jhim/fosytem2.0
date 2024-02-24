@@ -27,15 +27,11 @@ export async function POST(request,response){
     })
     const date = new Date().toDateString()
     const time = new Date().toTimeString()
-    const docs = await addDoc(colref,{
-        Customer:Req.Customer ,
-        Session:session.id ,
-        ArrofProduct:ArrofProducts,
-        Purchase:false,
-        Date:date,
-        Time:time
+    ArrofProducts.map(async(data)=>{
+        const Details = {...data,purchase:false,session:session.id,status:"Pending"}
+        const SentToDb = await addDoc(colref,Details)
     })
     
 
-    return NextResponse.json({status:true,id:session.id,idoforder:docs.id})
+    return NextResponse.json({status:true,id:session.id})
 }
