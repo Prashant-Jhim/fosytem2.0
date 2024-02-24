@@ -1,16 +1,39 @@
 'use client'
-import { doc, getDoc, getFirestore } from "firebase/firestore"
+import { collection, doc, getDoc, getDocs, getFirestore, query } from "firebase/firestore"
 import app from '../database/db'
 import { useRouter } from "next/navigation"
 import { useState ,useEffect} from "react"
 
 const orders = () =>{
-    const [Details,ChangeDetails] = useState([])
+    const [Details,ChangeDetails] = useState({})
+    const [arroforders,changeorders] = useState([])
     const db = getFirestore(app)
     const Router = useRouter()
     // Function To  Get Back To Menu 
     const GotoMenu = () =>{
         Router.push("/menu")
+    }
+
+    // Function To Fetch All Orders 
+    const FetchOrders = async(Type)=>{
+        const colref = collection(db,'successorders')
+            if (Type == "Employee"){
+            const getdocinstance = await getDocs(colref)
+            const docs = getdocinstance.docs.map((snapshot)=>{
+                return {...snapshot.data(),id:snapshot.id}
+            })
+            changeorders(docs)
+        }
+        if (Type == "Customer"){
+            const ID = window.localStorage.getItem("ID")
+            const q = query(colref,where("Customer","==",ID))
+            const getdocinstance = await getDocs(q) 
+            const docs = getdocinstance.docs.map((snapshot)=>{
+                return {...snapshot.data(),id:snapshot.id}
+            })
+            changeorders(docs)
+        }
+         
     }
     // Function User is login or not 
     const loginornot = async()=>{
@@ -27,6 +50,8 @@ const orders = () =>{
             }
             if (Details != undefined){
                 ChangeDetails(Details)
+                FetchOrders(Details.Type)
+                
             }
         }
     }
@@ -34,9 +59,10 @@ const orders = () =>{
     // UseEffect To Trigger during Rendering
     useEffect(()=>{
         loginornot()
+       
     },[])
     // Function Of Card 
-    const Card = () =>{
+    const Card = (props) =>{
 
         // Card Component 
         const MiniCard = () =>{
@@ -56,14 +82,16 @@ const orders = () =>{
          }
         return(
             <div className = "w-96 border border-black rounded  p-3 ">
-                <img className="w-full" src = "https://firebasestorage.googleapis.com/v0/b/fosystem2-86a07.appspot.com/o/images%2F2023-Porsche-911-GT3-R-Rennsport-004-2000.jpg%20%2B%20hahflahflh?alt=media&token=0ee758f1-51bc-46c7-b4ae-4fda2b90be4a" />
-                <h1 className = "text-3xl">Porshe 911 </h1>
-                <p className="text-xl text-green-500"><strong>$100</strong></p>
+                <img className="w-full" src = {props.ImgSrc} />
+                <h1 className = "text-3xl">{props.Name}</h1>
+                <p className="text-xl text-green-500"><strong>${props.Price}</strong></p>
+                <p className = 'mt- text-xl  mb-3'>Quantity:{props.Quantity}</p>
                 <p>Details:</p>
-                <p>Protein:10g</p>
-                <p>Protein:10g</p>
-                <p>Protein:10g</p>
-                <h2 className = "text-xl">Status:  <strong className = "text-red-500">Pending</strong></h2>
+                <p>Protein:{props.Protein}g</p>
+                <p>Fat:{props.Fat}g</p>
+                <p>Carbs:{props.Carbs}g</p>
+                <p>Sugar:{props.Sugar}g</p>
+                <h2 className = "text-xl">Status:  <strong className = "text-red-500">{props.status}</strong></h2>
                 <MiniCard/>
             </div>
         )
@@ -76,8 +104,8 @@ const orders = () =>{
             </h1>
             <h3 className = "text-3xl mt-12 ml-3 mb-6">Hi {Details.Name}👋🏻</h3>
             <h3 className = 'text-xl mb-6 ml-3'>Orders:</h3>
-            <div className = "flex ml-3 flex-col">
-                <Card/>
+            <div className = "flex ml-3 gap-6 flex-wrap">
+               {arroforders.map((data)=><Card ImgSrc={data.ImgSrc} Quantity={data.Quantity} Name = {data.Name} Price={data.Price} Sugar={data.Sugar} Protein={data.Protein} Carbs={data.Carbs} Fat = {data.Fat} status={data.status} />)}
             </div>
         </div>
     )
