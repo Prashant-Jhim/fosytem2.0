@@ -25,7 +25,7 @@ export async function POST(request,response){
         success_url:Req.url+"/success",
         cancel_url:Req.url+"/cart"
     })
-    const date = new Date().toDateString()
+    const date = new Date().toDateString() 
     const time = new Date().toTimeString()
     ArrofProducts.map(async(data)=>{
         const Details = {...data,purchase:false,session:session.id,status:"Pending"}
