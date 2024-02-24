@@ -28,16 +28,16 @@ const successpayment = () =>{
         });
     }
     useEffect(()=>{
-        ConfirmPayment()
+        
     },[])
     // Function To GetBack To Cart 
     const GoBack = () =>{
         Router.push("/cart")
     }
     return (
-        <div className = "flex flex-col w-full p-32 items-center">
-            <h1 className = ' font-title text-5xl'>FOSystem2.0🥗</h1>
-            <p className = 'text-3xl mt-6'>Thank u for your payment✅</p>
+        <div className = "flex flex-col w-full pt-32  items-center">
+            <h1 className = 'font-title text-5xl'>FOSystem2.0🥗</h1>
+            <p className = 'text-xl mt-6'>Thank u for your payment✅</p>
             <button onClick={GoBack} className = "text-xl mt-6 border border-black p-3 rounded shadow-lg active:shadow-md active:text-white   active:bg-green-500">⏪ Go Back</button>
         </div>
     )
