@@ -1,5 +1,5 @@
 'use client'
-import { collection, doc, getDoc, getDocs, getFirestore, query } from "firebase/firestore"
+import { collection, doc, getDoc, getDocs, getFirestore, query, where } from "firebase/firestore"
 import app from '../database/db'
 import { useRouter } from "next/navigation"
 import { useState ,useEffect} from "react"
