@@ -23,8 +23,12 @@ const Menu = () =>{
        Router.push('/')
       }
       if (data != undefined){
-        if (data.Type == "Customer"){
+        if (data.Type == "Customer" ){
             document.getElementById("AddProduct").style.display='none'
+            document.getElementById("Auth").style.display='none'
+        }
+        if (data.Type == "Owner"){
+            document.getElementById("AddProduct").style.display='block'
         }
       }
  }
@@ -88,6 +92,10 @@ const Logout = () =>{
     return 0
    }
 
+ }
+ // Function To Go To auth 
+ const GoToAuth = ()=>{
+    Router.push('/auth')
  }
  // Function To Go To Cart 
  const GoToCart = () =>{
@@ -159,6 +167,7 @@ const Logout = () =>{
 
             <div id = 'Options' className = "hidden xl:w-500 lg:w-500 md:w-500 sm:w-full w-full fixed flex p-6 top-24 border border-black h-3/4 right-0 flex-col  bg-white">
                 <button onClick={GoToProfile} className ="text-4xl active:text-red-600 border-2 border-white active:border-b-red-600 mt-6 mb-14">Profile</button>
+                <button id = "Auth" onClick={GoToAuth} className ="text-4xl active:text-red-600 border-2 border-white active:border-b-red-600 mt-6 mb-14">Auth</button>
                 <button onClick = {GoToAddProduct} id = "AddProduct" className ="text-4xl active:text-red-600 mb-14 border-2 border-white active:border-b-red-600">AddProduct</button>
                 <button onClick = {gotoOrders} className = "text-4xl active:text-red-600 active:border-b-red-600 mb-14 border-2 border-white">Orders</button>
                 <button onClick={GoToCart} className = "lg:hidden xl:hidden 2xl:hidden md:hidden sm:block block text-4xl active:text-red-600 mb-14 border-2 border-white active:border-b-red-600">Cart({CartNo})</button>

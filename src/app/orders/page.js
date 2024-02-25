@@ -1,5 +1,5 @@
 'use client'
-import { collection, doc, getDoc, getDocs, getFirestore, query, where } from "firebase/firestore"
+import { collection, deleteDoc, doc, getDoc, getDocs, getFirestore, query, updateDoc, where } from "firebase/firestore"
 import app from '../database/db'
 import { useRouter } from "next/navigation"
 import { useState ,useEffect} from "react"
@@ -66,11 +66,25 @@ const orders = () =>{
 
         // Card Component 
         const MiniCard = () =>{
+            // Function To Make Order Mark as Done
+            const MakeItDone = async()=>{
+                const id = props.id
+                const Doc = doc(db,'successorders',id)
+                const update = await updateDoc(Doc,{status:"Done"})
+                FetchOrders(Details.Type)
+            }
+            // Function To Delete 
+            const DeleteIt = async()=>{
+                const id = props.id 
+                const Doc = doc(db,"successorders",id)
+                const Deleted = await deleteDoc(Doc)
+                FetchOrders(Details.Type)
+            }
             if (Details.Type == "Employee"){
                 return (
                     <div className = "flex mt-3">
-                    <button className = "border border-black p-3 bg-green-400 shadow-lg active:bg-white rounded mr-3 text-xl">Done</button>
-                    <button className = "border border-black p-3 bg-red-500 shadow-lg active:bg-white active:text-red-500 text-white rounded mr-3 text-xl">Delete</button>
+                    <button onClick={MakeItDone} className = "border border-black p-3 bg-green-400 shadow-lg active:bg-white rounded mr-3 text-xl">Done</button>
+                    <button onClick = {DeleteIt} className = "border border-black p-3 bg-red-500 shadow-lg active:bg-white active:text-red-500 text-white rounded mr-3 text-xl">Delete</button>
                     </div>
                 )
             }
@@ -105,7 +119,7 @@ const orders = () =>{
             <h3 className = "text-3xl mt-12 ml-3 mb-6">Hi {Details.Name}👋🏻</h3>
             <h3 className = 'text-xl mb-6 ml-3'>Orders:</h3>
             <div className = "flex ml-3 gap-6 flex-wrap">
-               {arroforders.map((data)=><Card ImgSrc={data.ImgSrc} Quantity={data.Quantity} Name = {data.Name} Price={data.Price} Sugar={data.Sugar} Protein={data.Protein} Carbs={data.Carbs} Fat = {data.Fat} status={data.status} />)}
+               {arroforders.map((data)=><Card id = {data.id} ImgSrc={data.ImgSrc} Quantity={data.Quantity} Name = {data.Name} Price={data.Price} Sugar={data.Sugar} Protein={data.Protein} Carbs={data.Carbs} Fat = {data.Fat} status={data.status} />)}
             </div>
         </div>
     )

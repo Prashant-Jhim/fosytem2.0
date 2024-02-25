@@ -1,11 +1,25 @@
 "use client"
-import { collection, deleteDoc, doc, getDocs, getFirestore, updateDoc } from 'firebase/firestore'
+import { collection, deleteDoc, doc, getDoc, getDocs, getFirestore, updateDoc } from 'firebase/firestore'
 import { useEffect,useState } from 'react'
 import app from '../database/db'
+import { useRouter } from 'next/navigation'
 const Auth = () =>{
+    const Router = useRouter()
     const db = getFirestore(app)
     const colref = collection(db,'users')
     const [users,changeuserdata] = useState([])
+    // Function To Check User is Owner 
+    const CheckUser = async()=>{
+        const ID = window.localStorage.getItem("ID")
+        const docinstance = doc(db,'users',ID)
+        const getdocinstance = await getDoc(docinstance)
+        const datainstance = getdocinstance.data()
+        if (datainstance != undefined){
+            if (datainstance.Type != "Owner"){
+                Router.push('/menu')
+            }
+        }
+    }
     // Function To Fetch All The Users Details
     const FetchUsers = async() =>{
         const GetDocInstance = await getDocs(colref)
@@ -16,6 +30,10 @@ const Auth = () =>{
         console.log(Docs)
         changeuserdata(Docs)
     }
+    //Function To Go Back To Menu 
+    const GoBack = ()=>{
+        Router.push("/menu")
+    }
     // Function To Call Search For Particular Keyword 
     const SearchThrough = (event)=>{
        
@@ -23,6 +41,7 @@ const Auth = () =>{
     // UseEffect To Run During Rendering 
     useEffect(()=>{
         FetchUsers()
+        CheckUser()
     },[])
     // Card Component for searched employee
     const Card = (props) =>{
@@ -32,12 +51,12 @@ const Auth = () =>{
             const Doc = doc(db,"users",props.id)
             console.log(props.id)
             console.log(type)
-            if (type == "User"){
+            if (type == "Customer"){
                 const update = await updateDoc(Doc,{Type:"Employee"})
                 FetchUsers()
             }
             if (type == "Employee"){
-                const update = await updateDoc(Doc,{Type:"User"})
+                const update = await updateDoc(Doc,{Type:"Customer"})
                 FetchUsers()
             }
             if (type == "Delete"){
@@ -46,13 +65,13 @@ const Auth = () =>{
             }
         }
         
-        if (props.Type == "User"){
+        if (props.Type == "Customer"){
             return (
                 <div className = "flex rounded border mt-3 p-6 border-black shadow-lg flex-col">
                     <h3>{props.Name}</h3>
                     <p>{props.Email}</p>
                     <div className = "mt-3">
-                        <button value = "User" onClick = {UserOrEmp} className = "border-2 border-black p-3 bg-green-500 text-white rounded">Make Employee</button>
+                        <button value = "Customer" onClick = {UserOrEmp} className = "border-2 border-black p-3 bg-green-500 text-white rounded">Make Employee</button>
                         <button value = "Delete" onClick = {UserOrEmp} className = "border-2 border-black p-3 bg-red-500 text-white rounded ml-4">Delete User</button>
                     </div>
                 </div>
@@ -73,7 +92,7 @@ const Auth = () =>{
     }
     return(
         <div className = "flex flex-col w-full">
-            <button className = "fixed top-3 left-3 text-3xl">⏪Back</button>
+            <button onClick={GoBack} className = "fixed top-3 left-3 text-3xl">⏪Back</button>
             <h1 className = "self-center mt-24 font-title text-5xl">FOSystem2.0🥗</h1>
             <div className = 'mt-14 self-center'>
                 <input className = "w-80 xl:w-80 2xl:w-80 md:w-80 sm:w-11/12 border-0 border-b-2 border-black text-xl p-3" type = "text" placeholder = "Enter The UserName;" />
