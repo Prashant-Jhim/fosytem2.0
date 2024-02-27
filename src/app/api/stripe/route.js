@@ -25,6 +25,7 @@ export async function POST(request,response){
         success_url:Req.url+"/success",
         cancel_url:Req.url+"/cart"
     })
+    console.log(session)
     const date = new Date().toDateString() 
     const time = new Date().toTimeString()
     ArrofProducts.map(async(data)=>{

@@ -1,9 +1,10 @@
 'use client'
 import {useEffect,useState} from 'react'
 import app from '../database/db'
-import { getFirestore,doc,getDoc, collection, getDocs, addDoc, query, where } from 'firebase/firestore'
+import { getFirestore,doc,getDoc, collection, getDocs, addDoc, query, where, deleteDoc } from 'firebase/firestore'
 import { useRouter } from 'next/navigation'
 const Menu = () =>{
+    const [Details,ChangeDetails] = useState({})
     const [Show,ChangeShow] = useState("Options")
     const [CartNo,ChangeCartNo] = useState(0)
     // Arr of Product 
@@ -23,12 +24,19 @@ const Menu = () =>{
        Router.push('/')
       }
       if (data != undefined){
+        ChangeDetails(data)
         if (data.Type == "Customer" ){
+            document.getElementById("AddProduct").style.display='none'
+            document.getElementById("Auth").style.display='none'
+        }
+        if (data.Type == "Employee"){
             document.getElementById("AddProduct").style.display='none'
             document.getElementById("Auth").style.display='none'
         }
         if (data.Type == "Owner"){
             document.getElementById("AddProduct").style.display='block'
+            document.getElementById("Cart1").style.display= 'none'
+            document.getElementById("Cart2").style.display="none"
         }
       }
  }
@@ -104,6 +112,31 @@ const Logout = () =>{
     // Card Component 
     const Card = (props) =>{
         
+        // Mini Card
+        const  MiniCard = () =>{
+
+            // Function To Delete The Card 
+            const Delete = async()=>{
+                const docinstance = doc(db,'products',props.id)
+                const del = await deleteDoc(docinstance)
+                FetchProduct()
+            }
+            if (Details.Type == "Owner"){
+                return (
+                <>
+                <button onClick = {Delete} id = {props.id+"delete"} className = "border border-black w-36 h-14 rounded text-white text-xl ml-3 mb-3 bg-red-500">Delete</button>
+                </>
+                )
+            }
+            else{
+                return (
+                    <>
+                    <button id = {props.id+"button"} onClick={AddToCart} className = "border bg-red-500  text-white rounded h-12 border-black w-36 mb-3 ml-3 active:bg-white active:text-red-500">Add To Cart</button>
+
+                    </>
+                )
+            }
+        }
 
         
         // Function To Add To Cart 
@@ -117,6 +150,7 @@ const Logout = () =>{
             const details = {
                 ...props,
                 Quantity:value ,
+                NameofCustomer:Details.Name,
                 Customer:window.localStorage.getItem("ID")
             }
            
@@ -147,8 +181,8 @@ const Logout = () =>{
                     <p>Sugar : {props.Sugar}g</p>
                 </div>
                 <input id = "Qty"  className = "text-xl border p-3 border-0 border-b-2 border-b-black w-36 ml-3 mb-6" type = "number" placeholder = "Quantity" />
-                <button id = {props.id+"button"} onClick={AddToCart} className = "border bg-red-500  text-white rounded h-12 border-black w-36 mb-3 ml-3 active:bg-white active:text-red-500">Add To Cart</button>
-                <p id = {props.id} className = "left-3 top-3 hidden text-white absolute bg-red-500 w-48 p-3 text-xl">Added To Cart ✅</p>
+               <MiniCard/>
+               <p id = {props.id} className = "left-3 top-3 hidden text-white absolute bg-red-500 w-48 p-3 text-xl">Added To Cart ✅</p>
             </div>
         )
     }
@@ -156,7 +190,7 @@ const Logout = () =>{
         <div className = "flex flex-col w-full">
             <div className="w-full flex p-3 flex-row">
                 <h1 className = "text-4xl md:text-5xl xl:text-5xl 2xl:text-5xl sm:text-4xl w-11/12 font-title">FOSystem2.0🥗</h1> 
-                <button onClick={GoToCart} className = "text-2xl mr-6 2xl:block xl:block lg:block hidden md:block sm:hidden">Cart({CartNo})</button>
+                <button id = "Cart1" onClick={GoToCart} className = "text-2xl mr-6 2xl:block xl:block lg:block hidden md:block sm:hidden">Cart({CartNo})</button>
                 <button onClick = {ShowOrClose} className = "text-2xl mr-6">{Show}</button>
             </div>
 
@@ -167,10 +201,10 @@ const Logout = () =>{
 
             <div id = 'Options' className = "hidden xl:w-500 lg:w-500 md:w-500 sm:w-full w-full fixed flex p-6 top-24 border border-black h-3/4 right-0 flex-col  bg-white">
                 <button onClick={GoToProfile} className ="text-4xl active:text-red-600 border-2 border-white active:border-b-red-600 mt-6 mb-14">Profile</button>
-                <button id = "Auth" onClick={GoToAuth} className ="text-4xl active:text-red-600 border-2 border-white active:border-b-red-600 mt-6 mb-14">Auth</button>
+                <button id = "Auth" onClick={GoToAuth} className ="text-4xl active:text-red-600 border-2 border-white active:border-b-red-600  mb-14">Auth</button>
                 <button onClick = {GoToAddProduct} id = "AddProduct" className ="text-4xl active:text-red-600 mb-14 border-2 border-white active:border-b-red-600">AddProduct</button>
                 <button onClick = {gotoOrders} className = "text-4xl active:text-red-600 active:border-b-red-600 mb-14 border-2 border-white">Orders</button>
-                <button onClick={GoToCart} className = "lg:hidden xl:hidden 2xl:hidden md:hidden sm:block block text-4xl active:text-red-600 mb-14 border-2 border-white active:border-b-red-600">Cart({CartNo})</button>
+                <button id = "Cart2" onClick={GoToCart} className = "lg:hidden xl:hidden 2xl:hidden md:hidden sm:block block text-4xl active:text-red-600 mb-14 border-2 border-white active:border-b-red-600">Cart({CartNo})</button>
                 <button className ="text-4xl active:text-red-600 mb-14 border-2 border-white active:border-b-red-600" onClick={Logout}>Logout</button>
             </div>
         </div>

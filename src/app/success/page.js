@@ -28,7 +28,7 @@ const successpayment = () =>{
         });
     }
     useEffect(()=>{
-        
+        ConfirmPayment()
     },[])
     // Function To GetBack To Cart 
     const GoBack = () =>{

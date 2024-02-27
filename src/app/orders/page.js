@@ -17,7 +17,7 @@ const orders = () =>{
     // Function To Fetch All Orders 
     const FetchOrders = async(Type)=>{
         const colref = collection(db,'successorders')
-            if (Type == "Employee"){
+        if (Type == "Employee" || Type == "Owner"){
             const getdocinstance = await getDocs(colref)
             const docs = getdocinstance.docs.map((snapshot)=>{
                 return {...snapshot.data(),id:snapshot.id}
@@ -59,11 +59,20 @@ const orders = () =>{
     // UseEffect To Trigger during Rendering
     useEffect(()=>{
         loginornot()
-       
+       FetchOrders()
     },[])
     // Function Of Card 
     const Card = (props) =>{
-
+        // Card For Showing The Name 
+        const NameCard = () =>{
+            if (Details.Type == "Employee" || Details.Type == "Owner"){
+            return (
+                <>
+                <p className = "text-xl mb-3">Customer : {props.NameofCustomer}</p>
+                </>
+            )
+            }
+        }
         // Card Component 
         const MiniCard = () =>{
             // Function To Make Order Mark as Done
@@ -80,7 +89,7 @@ const orders = () =>{
                 const Deleted = await deleteDoc(Doc)
                 FetchOrders(Details.Type)
             }
-            if (Details.Type == "Employee"){
+            if (Details.Type == "Employee" || Details.Type == "Owner"){
                 return (
                     <div className = "flex mt-3">
                     <button onClick={MakeItDone} className = "border border-black p-3 bg-green-400 shadow-lg active:bg-white rounded mr-3 text-xl">Done</button>
@@ -100,6 +109,8 @@ const orders = () =>{
                 <h1 className = "text-3xl">{props.Name}</h1>
                 <p className="text-xl text-green-500"><strong>${props.Price}</strong></p>
                 <p className = 'mt- text-xl  mb-3'>Quantity:{props.Quantity}</p>
+
+                <NameCard/>
                 <p>Details:</p>
                 <p>Protein:{props.Protein}g</p>
                 <p>Fat:{props.Fat}g</p>
@@ -119,7 +130,7 @@ const orders = () =>{
             <h3 className = "text-3xl mt-12 ml-3 mb-6">Hi {Details.Name}👋🏻</h3>
             <h3 className = 'text-xl mb-6 ml-3'>Orders:</h3>
             <div className = "flex ml-3 gap-6 flex-wrap">
-               {arroforders.map((data)=><Card id = {data.id} ImgSrc={data.ImgSrc} Quantity={data.Quantity} Name = {data.Name} Price={data.Price} Sugar={data.Sugar} Protein={data.Protein} Carbs={data.Carbs} Fat = {data.Fat} status={data.status} />)}
+               {arroforders.map((data)=><Card NameofCustomer={data.NameofCustomer} id = {data.id} ImgSrc={data.ImgSrc} Quantity={data.Quantity} Name = {data.Name} Price={data.Price} Sugar={data.Sugar} Protein={data.Protein} Carbs={data.Carbs} Fat = {data.Fat} status={data.status} />)}
             </div>
         </div>
     )
