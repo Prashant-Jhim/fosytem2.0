@@ -30,6 +30,7 @@ export async function POST(request,response){
     const time = new Date().toTimeString()
     ArrofProducts.map(async(data)=>{
         const Details = {...data,purchase:false,session:session.id,status:"Pending"}
+        console.log(Details)
         const SentToDb = await addDoc(colref,Details)
     })
     

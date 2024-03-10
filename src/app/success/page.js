@@ -20,12 +20,14 @@ const successpayment = () =>{
         });
         // To Confirm The order in Database 
         const session = window.localStorage.getItem("session")
+        console.log(session)
         const querySnapshot2 = await getDocs(query(collection(db, 'successorders'), where("session","==",session)));
-        // Iterate over the documents returned by the query and delete them
-        querySnapshot2.forEach(async (doc) => {
-            await deleteDoc(doc.ref);
+        console.log(querySnapshot2)
+        querySnapshot2.docs.map(async(snapshot)=>{
+            var docinstance = doc(db,'successorders',snapshot.id)
+            await updateDoc(docinstance,{purchase:true})
+        })
         
-        });
     }
     useEffect(()=>{
         ConfirmPayment()

@@ -109,6 +109,10 @@ const Logout = () =>{
  const GoToCart = () =>{
     Router.push("/cart")
  }
+ // Function To Go To Clockinorout page 
+ const GoToClockin = () =>{
+    Router.push('/clockin')
+ }
     // Card Component 
     const Card = (props) =>{
         
@@ -203,6 +207,7 @@ const Logout = () =>{
                 <button onClick={GoToProfile} className ="text-4xl active:text-red-600 border-2 border-white active:border-b-red-600 mt-6 mb-14">Profile</button>
                 <button id = "Auth" onClick={GoToAuth} className ="text-4xl active:text-red-600 border-2 border-white active:border-b-red-600  mb-14">Auth</button>
                 <button onClick = {GoToAddProduct} id = "AddProduct" className ="text-4xl active:text-red-600 mb-14 border-2 border-white active:border-b-red-600">AddProduct</button>
+                <button onClick = {GoToClockin} className = "text-4xl active:text-red-600 active:border-b-red-600 mb-14 border-2 border-white">Clockinorout⏰</button>
                 <button onClick = {gotoOrders} className = "text-4xl active:text-red-600 active:border-b-red-600 mb-14 border-2 border-white">Orders</button>
                 <button id = "Cart2" onClick={GoToCart} className = "lg:hidden xl:hidden 2xl:hidden md:hidden sm:block block text-4xl active:text-red-600 mb-14 border-2 border-white active:border-b-red-600">Cart({CartNo})</button>
                 <button className ="text-4xl active:text-red-600 mb-14 border-2 border-white active:border-b-red-600" onClick={Logout}>Logout</button>
