@@ -20,6 +20,7 @@ const page = () =>{
 
     // Part To change Type of Password input field 
     const [type,Changetype] = useState("password")
+    const [ShowPasstxt,ChangePasstxt] = useState("Show Password 🔓")
     // Part To Show Alert Portion 
     const [Alert,ChangeAlert] = useState("")
     const [Alert2,ChangeAlert2] = useState("")
@@ -94,10 +95,12 @@ const page = () =>{
     const ShowPass = () =>{
         if (type == "password"){
             Changetype("text")
+            ChangePasstxt("Hide Password 🔒")
             return 0
         }
         if (type == "text"){
             Changetype("password")
+            ChangePasstxt("Show Password 🔓")
             return 0
         }
     }
@@ -189,7 +192,7 @@ const page = () =>{
             <input id = "Name" className = " outline-none text-xl 2xl:w-500 xl:w-500 lg:w-500 md:w-500 sm:w-3/4 w-3/4 mb-6 border-b-2 border-black h-14 p-3 " type = "text" placeholder = "Enter The Name :" />
             <input onChange={PassStrength} id = "pass1" className="outline-none text-xl 2xl:w-500 xl:w-500 lg:w-500 md:w-500 sm:w-3/4 w-3/4 mb-6 border-b-2 border-black h-14 p-3" type={type} placeholder="Enter The Password :" />
             <input onChange={MatchPassword} id = 'pass2' className="outline-none text-xl 2xl:w-500 xl:w-500 lg:w-500 md:w-500 sm:w-3/4 w-3/4 mb-6 border-b-2 border-black h-14 p-3" type = {type} placeholder="Confirm The Password" />
-            <button onClick={ShowPass} className = "w-48 text-xl mb-16">Show Password🔓</button>
+            <button onClick={ShowPass} className = "w-48 text-xl mb-16">{ShowPasstxt}</button>
             <button onClick={CreateAccount} className = "text-xl border border-black bg-red-500 active:bg-white active:text-red-500 shadow-lg rounded  shadow-gray-600 active:shadow-gray-400  text-white  w-40 h-14">Register</button>
             <h2 className = "text-xl mb-6 mt-6">OR</h2>
             <button onClick={GoToLogin} className = "w-48 border text-lg active:shadow-xl   border-black rounded h-14 shadow-lg">Login</button>

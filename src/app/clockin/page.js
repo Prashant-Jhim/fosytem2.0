@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation'
 const clockin = () =>{
     const Router = useRouter()
     const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"]
+    const [view,changeview] = useState("hoursheet")
     const db = getFirestore(app)
     const colref = collection(db,'clockinornot')
     const [Alert,ChangeAlert] = useState("")
@@ -19,14 +20,14 @@ const clockin = () =>{
             const docinstance = doc(db,"users",ID)
             const getdocinstance = await getDoc(docinstance) 
             const docs = getdocinstance.data()
-            if (docs.Type == "Owner"){
+            if (docs.Type == "Owner" && view != 'hoursheet'){
                 FetchBadges()
                 document.getElementById("date").style.display = 'block'
                 document.getElementById("PunchNo").style.display = 'none'
                 document.getElementById("submit").style.display = 'none'
                 document.getElementById("showbadges").style.display = 'block'
             }
-            if (docs.Type == "Employee"){
+            if (docs.Type == "Employee" && view != 'hoursheet'){
                 document.getElementById("date").style.display = 'none'
                 document.getElementById("PunchNo").style.display = 'block'
                 document.getElementById("submit").style.display = 'block'
@@ -217,6 +218,9 @@ const clockin = () =>{
                 const Details = {
                     StartDate : String(DateInNum) + " " + months[month] + " " + String(Year),
                     Start:Hour+Min,
+                    StartDateinNum :DateInNum,
+                    Month:months[month],
+                    Year:Year,
                     EndDate:"",
                     End:"",
                     Clockout:false,
@@ -258,22 +262,84 @@ const clockin = () =>{
         
 
     }
+
+    // Function To Change Screen From badges to hoursheet vice versa 
+    const changescreen = (event) =>{
+        const id = event.target.id 
+        console.log(id)
+        if (id == "badges"){
+            changeview("hoursheet")
+            return true 
+        }
+        if (id == "hoursheet"){
+            changeview("badges")
+            FetchBadges()
+            return true 
+        }
+    }
+    //Function To Filter The Badges acc to dates 
+    const filterbyweek = async() =>{
+        const date1 = document.getElementById("date1").value
+        const date1arr = date1.split("-") 
+        const date2 = document.getElementById("date2").value 
+        const date2arr = date2.split("-")
+        const month1 = months[date1arr[1]-1]
+        const month2 = months[date2arr[1]-1]
+        if (month1 == month2){
+            const q = query(colref,where("Month",'==',month1))
+            const getdocinstance = await getDocs(q) 
+            const docs = getdocinstance.docs.map((snapshot)=>{
+                const data = snapshot.data() 
+                var date1 = date1arr[2]
+                var date2 = date2arr[2]
+                if (data.StartDateinNum >= parseInt(date1) && data.StartDateinNum  <= parseInt(date2) ){
+                    return {...snapshot.data(),id:snapshot.id}
+                }
+                 
+            })
+            ChangeArr(docs)
+            
+        }
+    }
     
-       
+    if (view == "hoursheet"){
+        return (
+            <div className = 'flex flex-col items-center'>
+                <button onClick={goback} className = 'text-3xl absolute top-3 left-3'>⏪Back</button>
+                <button id = "hoursheet"  onClick = {changescreen} className = 'text-3xl   absolute top-3 right-6'>Badges📤</button>
+                 <h1 className = "text-5xl font-title mt-28 mb-12">FOSystem2.0🥗</h1>
+                <label className = "text-xl  ">Start</label>
+                <input id = "date1" className = "text-xl mt-3 border-0  border-b-black border-b-2" type = "date"  />
+                <label className = 'text-xl mt-6'>End</label>
+                <input id = 'date2' className = 'text-xl mt-3 border-0 border-b-black border-b-2' type = 'date'  />
+                <button onClick={filterbyweek} className = "border mt-6 border-black p-3  rounded  shadow-md active:shadow-lg">Search🔍</button>
+                {Arr.map((data)=>{
+                if (data != undefined){
+                    return (
+                <CardComponent Approved = {data.Approved} id = {data.id } enddate={data.EndDate} startdate={data.StartDate} PunchNo = {data.PunchNo} end = {data.End} start={data.Start} Total={data.Total} Clockout={data.Clockout} />
+                )}}
+                )}
+
+            </div>
+        )
+    }
     
 
-    return (
-        <div className = "flex flex-col w-full items-center">
-            <button onClick= {goback} className = "absolute top-3 left-3 text-3xl">⏪Back</button>
-            <h1 className = "text-5xl font-title mt-28 mb-12">FOSystem2.0🥗</h1>
-            <input id = "PunchNo" className = "text-xl mb-6 border-0 border-b-2 outline-none border-black p-3 " placeholder = "Enter The Punch No" />
-            <input id = 'date' type = 'date' className = 'text-xl hidden mb-6 border-0 border-b-2 border-black p-3 outline-none' />
-            <button id = "submit" onClick={clockinorout} className = "bg-green-400 active:bg-white active:text-green-400 shadow-md active:shadow-lg border border-black rounded p-3">Submit</button>
-            <button onClick={fetchbydate} id = "showbadges" className = " hidden mt-6 border border-black p-3 rounded shadow-md ">Show Badges 🔎</button>
-            <p id = "Alert" className = "hidden border border-black p-3 mt-3 bg-green-300 rounded">{Alert}</p>
-            {Arr.map((data)=><CardComponent Approved = {data.Approved} id = {data.id } enddate={data.EndDate} startdate={data.StartDate} PunchNo = {data.PunchNo} end = {data.End} start={data.Start} Total={data.Total} Clockout={data.Clockout} />)}
-
-        </div>
-    )
+    if (view == "badges"){
+        return (
+            <div className = "flex flex-col w-full items-center">
+                <button onClick= {goback} className = "absolute top-3 left-3 text-3xl">⏪Back</button> 
+                <button id = "badges"  onClick = {changescreen} className = ' top-3 right-8 absolute text-3xl '>Hoursheet⏰</button>
+                <h1 className = "text-5xl font-title mt-28 mb-12">FOSystem2.0🥗</h1>
+                <input id = "PunchNo" className = "text-xl mb-6 border-0 border-b-2 outline-none border-black p-3 " placeholder = "Enter The Punch No" />
+                <input id = 'date' type = 'date' className = 'text-xl hidden mb-6 border-0 border-b-2 border-black p-3 outline-none' />
+                <button id = "submit" onClick={clockinorout} className = "bg-green-400 active:bg-white active:text-green-400 shadow-md active:shadow-lg border border-black rounded p-3">Submit</button>
+                <button onClick={fetchbydate} id = "showbadges" className = " hidden mt-6 border border-black p-3 rounded shadow-md ">Show Badges 🔎</button>
+                <p id = "Alert" className = "hidden border border-black p-3 mt-3 bg-green-300 rounded">{Alert}</p>
+                {Arr.map((data)=><CardComponent Approved = {data.Approved} id = {data.id } enddate={data.EndDate} startdate={data.StartDate} PunchNo = {data.PunchNo} end = {data.End} start={data.Start} Total={data.Total} Clockout={data.Clockout} />)}
+    
+            </div>
+        )
+    }
 }
 export default clockin

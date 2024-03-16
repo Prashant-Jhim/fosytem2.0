@@ -10,6 +10,7 @@ export default function Home() {
   const [Alert,ChangeAlert] = useState("")
   // Show Password Part
   const [ShowPass,ChangePass] = useState("password")
+  const [ShowPasstxt,ChangePasstxt] = useState("Show Password 🔓")
   // Router Instance
   const Router = useRouter()
 
@@ -27,10 +28,12 @@ export default function Home() {
   const ShowPassword = () =>{
     if (ShowPass == "text"){
       ChangePass("password")
+      ChangePasstxt("Show Password 🔓")
       return 0
     }
     if (ShowPass == "password"){
       ChangePass("text")
+      ChangePasstxt("Hide Password 🔒")
       return 0
     }
   }
@@ -104,7 +107,7 @@ export default function Home() {
      <h1 className="mb-16 text-red-600 text-6xl font-title">FOSystem2.0🍲</h1>
     <input id = "Email" placeholder="Enter The Email" type="text" className="mb-6 text-2xl focus:border-green-600 focus:border-b-2 sm:w-full h-14 outline-none p-2 border-black border-0 border-b-2" />
     <input id = "Password" placeholder="Enter The Password" type={ShowPass} className=" sm:w-full text-2xl focus:border-green-600 focus:border-b-2 mb-6 h-14 outline-none p-2  mb-4 p-2 border-0 border-black border-b-2" />
-    <button onClick= {ShowPassword} className = "w-48 text-xl mb-14">Show Password🔓</button>
+    <button onClick= {ShowPassword} className = "w-48 text-xl mb-14">{ShowPasstxt}</button>
     <button onClick={Login} className=" text-xl border border-black bg-red-500 active:bg-white active:text-red-500 shadow-lg rounded  shadow-gray-600 active:shadow-gray-400  text-white  w-40 min-h-14">Login</button>
     <h1 className = "text-2xl mt-14 mb-12 w-full flex flex-col items-center">OR</h1>
    <div className = "w-full flex flex-col items-center">
