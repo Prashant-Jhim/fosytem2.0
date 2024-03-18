@@ -102,7 +102,13 @@ const page = () =>{
         if (details.FullName != '' && details.PhoneNo != '' && details.Address != ''&&details.ApplicantCity != '' && details.Postal != '' && details.url != ''){  
         const docinstane = doc(textdb,'applications',idofparams)
         const update = await updateDoc(docinstane,details)
+        changealert('Your Application has been submitted ✅')
+        document.getElementById("alert").style.display = 'block'
+        setTimeout(()=>{
+            router.push("/careers")
+        },2000)
         }
+
         else {
             document.getElementById("alert").style.display = 'block'
             changealert("Something went wrong ❌")

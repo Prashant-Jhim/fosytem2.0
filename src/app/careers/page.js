@@ -47,6 +47,9 @@ const page = () =>{
                 Router.push('/')
             }
             if (docs != undefined){
+                if (docs.Type != "Owner"){
+                    document.getElementById("CreateJob").style.display = 'none'
+                }
                 return getdocinstance.id
             }
         }
@@ -141,6 +144,10 @@ const page = () =>{
         )
     }
      
+    // Go Back to Menu page 
+    const GoBack = () =>{
+        Router.push("/menu")
+    }
 
      
     // Job Component 
@@ -220,8 +227,8 @@ const page = () =>{
     if (view == "search"){
         return (
             <div className = 'flex flex-col items-center'>
-                <button className = 'absolute text-2xl top-3 left-6'>⏪Back</button>
-                <button onClick={Changepage} className = 'absolute text-lg border shadow-md text-blakc active:text-red-500 active:shadow-lg border-black p-3 rounded top-3 right-6'>Create a Job💻</button>
+                <button onClick={GoBack} className = 'absolute text-2xl top-3 left-6'>⏪Back</button>
+                <button id = "CreateJob" onClick={Changepage} className = 'absolute text-lg border shadow-md text-blakc active:text-red-500 active:shadow-lg border-black p-3 rounded top-3 right-6'>Create a Job💻</button>
                 <h1 className = 'text-4xl mt-28 font-title'>FoSystem2.0🥗</h1>
                 <h2 className ='text-xl'>Careers</h2>
                 <input id = "CityName" className = 'border-0 border-b-2 mt-6 border-black p-3 text-xl' type = 'text' placeholder='Enter The City :' />
