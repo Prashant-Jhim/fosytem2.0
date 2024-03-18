@@ -1,8 +1,10 @@
 'use client'
-import { addDoc, collection, getDocs, getFirestore } from 'firebase/firestore'
+import { addDoc, collection, doc, getDoc, getDocs, getFirestore, query, where } from 'firebase/firestore'
 import app from '../database/db'
 import {useState,useEffect} from 'react'
+import { useRouter } from 'next/navigation'
 const page = () =>{
+    const Router = useRouter()
     const [view,changeview] = useState('search')
     const [Arr,changearr] = useState([])
     const db = getFirestore(app)
@@ -11,6 +13,17 @@ const page = () =>{
     const check = () =>{
         const value = document.getElementById("summary").value 
         console.log(value)
+    }
+    // function to Fetch The jobs of particular city 
+    const fetchcity = async() =>{
+        const city = document.getElementById("CityName").value 
+        const q = query(colref,where("City",'==',city.toLowerCase()))
+        const getdocinstance = await getDocs(q) 
+        const docs = getdocinstance.docs.map((snapshot)=>{
+            return {...snapshot.data(),id:snapshot.id}
+        })
+        changearr(docs)
+
     }
     // Change the Page 
     const Changepage = ()=>{
@@ -23,6 +36,21 @@ const page = () =>{
             return 0
         }
     }
+    // Function To Check User is Valid 
+    const UserCheck = async() =>{
+        const ID = window.localStorage.getItem("ID")
+        if (ID != undefined){
+            const docinstance = doc(db,'users',ID)
+            const getdocinstance = await getDoc(docinstance)
+            const docs = getdocinstance.data()
+            if (docs == undefined){
+                Router.push('/')
+            }
+            if (docs != undefined){
+                return getdocinstance.id
+            }
+        }
+    }
     // To Fetch the Jobs 
     const fetchjobs = async() =>{
         const getdocinstance = await getDocs(colref)
@@ -32,6 +60,7 @@ const page = () =>{
         changearr(docinstance)
     }
     useEffect(()=>{
+        UserCheck()
         fetchjobs()
     },[])
     
@@ -62,7 +91,7 @@ const page = () =>{
             const Details = {
                 Title:document.getElementById("Title").value ,
                 Summary:document.getElementById("Summary").value ,
-                City:document.getElementById("City").value ,
+                City:document.getElementById("City").value.toLowerCase() ,
                 PayRate:document.getElementById("PayRate").value ,
                 Type:document.getElementById("Type").value ,
                 Resp:store ,
@@ -117,6 +146,56 @@ const page = () =>{
     // Job Component 
     const Job = (props) =>{
         const arr = props.Resp
+        // To Check Particular job is already applied or not
+        const checkjob = async() =>{
+            const id = await UserCheck()
+            var colref = collection(db,'applications')
+            const q =query(colref,where('idofjob','==',props.id),where("idofapplicant",'==',id))
+            const getdocinstance = await getDocs(q)
+            const docs = getdocinstance.docs.map((snapshot)=>{
+             return {...snapshot.data(),id:snapshot.id}
+            })
+            if (docs.length != 0){
+                console.log(props,docs)
+                document.getElementById("Apply"+props.id).disabled = true 
+                document.getElementById("Apply"+props.id).style.backgroundColor = 'white'
+                document.getElementById("Apply"+props.id).style.color = 'black'
+                document.getElementById("Apply"+props.id).innerHTML = "Applied✅"
+            }
+        }
+        useEffect(()=>{
+            checkjob()
+        },[])
+         // To Apply for Job 
+    const applyjob = async() =>{
+        var colref = collection(db,'applications')
+        const id = await UserCheck()
+        const Details = {
+            idofapplicant:id,
+            idofjob:props.id,
+            FullName:"",
+            PhoneNo:"",
+            Address:"",
+            ApplicantCity:"",
+            Postal:'',
+            Url:'',
+            Applied:false
+        }
+        var colref = collection(db,'applications')
+       const q =query(colref,where('idofjob','==',Details.idofjob),where("idofapplicant",'==',Details.idofapplicant))
+       const getdocinstance = await getDocs(q)
+       const docs = getdocinstance.docs.map((snapshot)=>{
+        return {...snapshot.data(),id:snapshot.id}
+       })
+       if (docs.length == 0){
+        const senttodb = await addDoc(colref,Details)
+        Router.push('/apply/'+senttodb.id)
+       }
+       if (docs.length != 0){
+        alert("You Already Applied To This Job✅")
+       }
+       
+    }
         return (
             <div className = ' mt-6 flex w-10/12 rounded relative flex-col p-3 border border-black'>
 
@@ -134,7 +213,7 @@ const page = () =>{
                     })}
                 </ol>
 
-                <button className = ' w-24 mt-6 self-center border border-black p-2 bg-red-500 text-white rounded'>Apply</button>
+                <button id = {"Apply"+props.id} onClick={applyjob} className = ' w-24 mt-6 self-center border border-black p-2 bg-red-500 text-white rounded'>Apply</button>
             </div>
         )
     }
@@ -145,12 +224,12 @@ const page = () =>{
                 <button onClick={Changepage} className = 'absolute text-lg border shadow-md text-blakc active:text-red-500 active:shadow-lg border-black p-3 rounded top-3 right-6'>Create a Job💻</button>
                 <h1 className = 'text-4xl mt-28 font-title'>FoSystem2.0🥗</h1>
                 <h2 className ='text-xl'>Careers</h2>
-                <input className = 'border-0 border-b-2 mt-6 border-black p-3 text-xl' type = 'text' placeholder='Enter The City :' />
-                <button className = 'border active:text-red-500 border-black p-3 text-xl rounded shadow-md mt-6 active:shadow-lg'>Search🔍</button>
+                <input id = "CityName" className = 'border-0 border-b-2 mt-6 border-black p-3 text-xl' type = 'text' placeholder='Enter The City :' />
+                <button onClick={fetchcity} className = 'border active:text-red-500 border-black p-3 text-xl rounded shadow-md mt-6 active:shadow-lg'>Search🔍</button>
                 {Arr.map((data)=>{
                     if (data != undefined){
                         return (
-                            <Job PayRate={data.PayRate} Summary={data.Summary} Type={data.Type} City={data.City} Resp={data.Resp} Title={data.Title}/>
+                            <Job id = {data.id} PayRate={data.PayRate} Summary={data.Summary} Type={data.Type} City={data.City} Resp={data.Resp} Title={data.Title}/>
                         )
                     }
                 })}
