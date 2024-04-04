@@ -37,6 +37,7 @@ const Menu = () =>{
             document.getElementById("AddProduct").style.display='block'
             document.getElementById("Cart1").style.display= 'none'
             document.getElementById("Cart2").style.display="none"
+            document.getElementById("Applications").style.display="block"
         }
       }
  }
@@ -101,6 +102,10 @@ const Logout = () =>{
    }
 
  }
+ // Function to go to Applications page 
+ const gotoapplications = () =>{
+    Router.push("/applications")
+}
  // Function To Go To auth 
  const GoToAuth = ()=>{
     Router.push('/auth')
@@ -150,19 +155,20 @@ const Logout = () =>{
         // Function To Add To Cart 
         const AddToCart = async() =>{
             const prevNo = CartNo + 1
+            console.log(props.id)
             const colref = collection(db,'orders')
-            var value = document.getElementById("Qty").value 
-            if ( value == ""){
+            var value = document.getElementById(props.id+"input").value 
+            if (value == ""){
                 value = 1
             }
+            console.log(value)
             const details = {
                 ...props,
                 Quantity:value ,
                 NameofCustomer:Details.Name,
                 Customer:window.localStorage.getItem("ID")
             }
-           
-
+            console.log(details)
             const SendTodb = await addDoc(colref,details)
             if (SendTodb.id != undefined){
                 document.getElementById(props.id).style.display = 'flex'
@@ -176,6 +182,7 @@ const Logout = () =>{
             
             
         }
+        
         return (
             <div className = "overflow-hidden relative h-full w-96 flex flex-col shadow-gray-300 shadow-lg rounded border border-black">
                 <img className = "w-full h-64 object-cover" src = {props.ImgSrc} />
@@ -188,7 +195,7 @@ const Logout = () =>{
                     <p>Fats : {props.Fat}g</p>
                     <p>Sugar : {props.Sugar}g</p>
                 </div>
-                <input id = "Qty"  className = "text-xl border p-3 border-0 border-b-2 border-b-black w-36 ml-3 mb-6" type = "number" placeholder = "Quantity" />
+                <input id = {props.id+"input"}  className = "text-xl border p-3 border-0 border-b-2 border-b-black w-36 ml-3 mb-6" type = "number" placeholder = "Quantity" />
                <MiniCard/>
                <p id = {props.id} className = "left-3 top-3 hidden text-white absolute bg-red-500 w-48 p-3 text-xl">Added To Cart ✅</p>
             </div>
@@ -211,6 +218,8 @@ const Logout = () =>{
                 <button onClick={GoToProfile} className ="text-4xl active:text-red-600 border-2 border-white active:border-b-red-600 mt-6 mb-14">Profile</button>
                 <button id = "Auth" onClick={GoToAuth} className ="text-4xl active:text-red-600 border-2 border-white active:border-b-red-600  mb-14">Auth</button>
                 <button onClick = {GoToAddProduct} id = "AddProduct" className ="text-4xl active:text-red-600 mb-14 border-2 border-white active:border-b-red-600">AddProduct</button>
+                <button id = "Applications" onClick={gotoapplications} className = 'text-4xl hidden active:text-red-600 mb-14 border-2 border-white active:border-b-red-600'>Applications📝</button>
+
                 <button onClick={GoToCareers} className = 'text-4xl active:text-red-600 mb-14 border-2 border-white active:border-b-red-600'>Careers🙋🏼‍♂️</button>
                 <button onClick = {GoToClockin} className = "text-4xl active:text-red-600 active:border-b-red-600 mb-14 border-2 border-white">Clockinorout⏰</button>
                 <button onClick = {gotoOrders} className = "text-4xl active:text-red-600 active:border-b-red-600 mb-14 border-2 border-white">Orders</button>

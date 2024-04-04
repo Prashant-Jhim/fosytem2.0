@@ -84,7 +84,7 @@ const page = () =>{
        
 
     }
-
+   
     // Apply for job
     const apply = async() =>{
         const idofparams = Params.id

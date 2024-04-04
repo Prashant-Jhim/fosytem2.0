@@ -50,7 +50,7 @@ const page = () =>{
                 if (docs.Type != "Owner"){
                     document.getElementById("CreateJob").style.display = 'none'
                 }
-                return getdocinstance.id
+                return {...docs,id:getdocinstance.id}
             }
         }
     }
@@ -155,7 +155,8 @@ const page = () =>{
         const arr = props.Resp
         // To Check Particular job is already applied or not
         const checkjob = async() =>{
-            const id = await UserCheck()
+            const Detail = await UserCheck()
+            const id = Detail.id
             var colref = collection(db,'applications')
             const q =query(colref,where('idofjob','==',props.id),where("idofapplicant",'==',id))
             const getdocinstance = await getDocs(q)
@@ -176,9 +177,11 @@ const page = () =>{
          // To Apply for Job 
     const applyjob = async() =>{
         var colref = collection(db,'applications')
-        const id = await UserCheck()
+        const Detail = await UserCheck()
+        console.log(Detail)
         const Details = {
-            idofapplicant:id,
+            idofapplicant:Detail.id,
+            Email:Detail.Email,
             idofjob:props.id,
             FullName:"",
             PhoneNo:"",
@@ -186,8 +189,11 @@ const page = () =>{
             ApplicantCity:"",
             Postal:'',
             Url:'',
-            Applied:false
+            Applied:false,
+            InterviewID:"",
+            Interview:false
         }
+       
         var colref = collection(db,'applications')
        const q =query(colref,where('idofjob','==',Details.idofjob),where("idofapplicant",'==',Details.idofapplicant))
        const getdocinstance = await getDocs(q)
