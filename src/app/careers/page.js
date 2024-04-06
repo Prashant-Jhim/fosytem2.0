@@ -69,7 +69,7 @@ const page = () =>{
     
     // Responsibilites Component to Avoid unusal refresh 
     const Resp = () =>{
-        const [store,changestore] = useState([{index:0,value:"oaoafakfp"}])
+        const [store,changestore] = useState([])
         const [alert,changealert] = useState("Deleting....")
         // Function to Delete The Responsibilites 
      const DelRep = (event) =>{
@@ -101,6 +101,19 @@ const page = () =>{
                 Date:String(dat) + ' ' + String(Months[month]) + ' ' + String(year)
             }
             const addoc = await addDoc(colref,Details)
+            if (addDoc.id != ""){
+                changestore([])
+                document.getElementById("Title").value = ''
+                document.getElementById("Summary").value = ''
+                document.getElementById("City").value = ''
+                document.getElementById("PayRate").value = ''
+                document.getElementById("Type").value = ''
+                document.getElementById("alertforpost").style.display = 'block'
+                setTimeout(()=>{
+                    document.getElementById("alertforpost").style.display = 'none'
+                },3000)
+
+            }
         }
         // Push Responsibities 
         const push = (event) =>{
@@ -149,7 +162,29 @@ const page = () =>{
         Router.push("/menu")
     }
 
-     
+     // View Component 
+     const ViewPort = () =>{
+        if (Arr.length == 0){
+            return (
+                <div className = 'mt-24'>
+                    <h2 className = 'text-2xl'>No Job listed ❌</h2>
+                </div>
+            )
+        }
+        if (Arr.length != 0){
+            return (
+                <>
+                    {Arr.map((data)=>{
+                    if (data != undefined){
+                        return (
+                            <Job id = {data.id} PayRate={data.PayRate} Summary={data.Summary} Type={data.Type} City={data.City} Resp={data.Resp} Title={data.Title}/>
+                        )
+                    }
+                })}
+                </>
+            )
+        }
+     }
     // Job Component 
     const Job = (props) =>{
         const arr = props.Resp
@@ -239,13 +274,7 @@ const page = () =>{
                 <h2 className ='text-xl'>Careers</h2>
                 <input id = "CityName" className = 'border-0 border-b-2 mt-6 border-black p-3 text-xl' type = 'text' placeholder='Enter The City :' />
                 <button onClick={fetchcity} className = 'border active:text-red-500 border-black p-3 text-xl rounded shadow-md mt-6 active:shadow-lg'>Search🔍</button>
-                {Arr.map((data)=>{
-                    if (data != undefined){
-                        return (
-                            <Job id = {data.id} PayRate={data.PayRate} Summary={data.Summary} Type={data.Type} City={data.City} Resp={data.Resp} Title={data.Title}/>
-                        )
-                    }
-                })}
+                <ViewPort/>
             </div>
         )
     }
@@ -258,6 +287,7 @@ const page = () =>{
                 <h1 className = 'text-4xl mt-28 font-title'>FoSystem2.0🥗</h1>
                 <h2 className ='text-xl'>Careers</h2>
 
+                <p id = "alertforpost" className = 'mt-12 hidden border border-black p-3 rounded bg-green-200'>The Job has been Posted 📤</p>
                 <input id = "Title" className = 'border-0 mt-6 outline-none  border-b-black p-3 text-md border-b-2' type = 'text' placeholder = "Enter The Title " /> 
                 <textarea id = "Summary" className = 'mt-6 h-36 outline-none text-md border border-black p-3 rounded' placeholder = 'Summary Of job'></textarea>
                 <input id = "City" className = "border-0 outline-none border-b-black border-b-2 p-3 text-md" placeholder = "Enter The City" type = 'text' />       
@@ -276,6 +306,7 @@ const page = () =>{
                  </datalist>
                 </div>
                 <Resp />
+            
                     </div>
         )
     }

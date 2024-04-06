@@ -112,7 +112,7 @@ export  async function POST(req,res){
       </div>
       <p style="font-size:1.1em">Hi ${Details.FullName}</p>
       <p>Thank you for applying  ${Details.Job}(${Details.JobID}) position </p>
-      <a>Click The Link To Setup Interview </p>
+      <a href = ${Details.url}>Click The Link To Setup Interview </p>
       <p style="font-size:0.9em;">Regards,<br />ChatAPP Service</p>
       <hr style="border:none;border-top:1px solid #eee" />
       <div style="float:right;padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300">

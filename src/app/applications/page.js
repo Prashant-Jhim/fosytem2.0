@@ -47,26 +47,30 @@ const page = () =>{
         const [Details,changeDetails] = useState({Title:"Loading",ID:"Loading"})
         // Function To Set Up Interview for Applicant 
     const SetUpInterview = async() =>{
+        const details = {
+            Title:Details.Title,
+            date:'',
+            time:'',
+            AppNo:props.id,
+            Url:"",
+            JobID:Details.ID,
+            Name:props.FullName
+        }
+        const collectionref = collection(db,'interviews')
+        const addref = await addDoc(collectionref,details)
+
+        const url = window.location.origin + '/interview/'+addref.id
         const Request = await fetch('/api/email',{
             method:"POST",
             headers:{"Content-Type":"applications/json"},
-            body:JSON.stringify({Email:props.Email,Type:"Interview",FullName:props.FullName,Job:Details.Title,JobID:Details.ID})
+            body:JSON.stringify({Email:props.Email,url,Type:"Interview",FullName:props.FullName,Job:Details.Title,JobID:Details.ID})
         })
         const Response = await Request.json() 
         if (Response.status == true){
             const docinstance = doc(db,'applications',props.id)
-           
-
-            const details = {
-                Title:Details.Title,
-                date:'',
-                time:'',
-                AppNo:props.id,
-                JobID:Details.ID,
-                Name:props.FullName
-            }
-            const collectionref = collection(db,'interviews')
-            const addref = await addDoc(collectionref,details)
+             
+             
+            
             const update = {Interview:true,InterviewID:addref.id}
             const updatedocinstance = await updateDoc(docinstance,update)
             fetchap()
