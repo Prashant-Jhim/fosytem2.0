@@ -21,7 +21,7 @@ export  async function POST(req,res){
         <p style="font-size:1.1em">Hi,</p>
         <p>Thank you for choosing FOSystem2.0 Service. Use the following link to complete your Sign Up procedures. link is valid for 5 minutes</p>
 
-        <a href = ${Details.url + "/verify/" + link}>Verify The Account</a>
+        <a href = ${Details.url + "/verify/" + link} >Verify The Account</a>
         
         <p style="font-size:0.9em;">Regards,<br />ChatAPP Service</p>
         <hr style="border:none;border-top:1px solid #eee" />

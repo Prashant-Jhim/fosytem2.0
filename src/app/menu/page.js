@@ -28,16 +28,17 @@ const Menu = () =>{
         if (data.Type == "Customer" ){
             document.getElementById("AddProduct").style.display='none'
             document.getElementById("Auth").style.display='none'
+            document.getElementById("Applications").style.display="block"
         }
         if (data.Type == "Employee"){
             document.getElementById("AddProduct").style.display='none'
             document.getElementById("Auth").style.display='none'
+            document.getElementById("Applications").style.display="block"
         }
         if (data.Type == "Owner"){
             document.getElementById("AddProduct").style.display='block'
             document.getElementById("Cart1").style.display= 'none'
             document.getElementById("Cart2").style.display="none"
-            document.getElementById("Applications").style.display="block"
         }
       }
  }
